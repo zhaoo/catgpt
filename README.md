@@ -1,71 +1,30 @@
-# fliggy-chatgpt-vscode README
+# :cat:catgpt - VSCode 编程辅助插件
 
-This is the README for your extension "fliggy-chatgpt-vscode". After writing up a brief description, we recommend including the following sections.
+catgpt 是一款基于 chatgpt 的 VSCode 编程辅助插件，支持评分、建议、优化、补全等多种编程辅助功能。同时，它还提供各种可爱的表情动图来鼓励编程。
 
-## Features
+## 功能
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- 编程评分：catgpt 可以对你的代码进行评分，给出相应的评分和建议。
+- 编程建议：当你的代码存在一些问题时，catgpt 会提供一些优化和改进的建议。
+- 代码优化：catgpt 可以帮助你对代码进行优化，提高代码的性能和可读性。
+- 代码补全：catgpt 可以为你提供代码补全的功能，让你的编码变得更加高效。
+- 表情动图鼓励：当你在编程时遇到困难或者感到疲惫时，catgpt 会为你提供各种可爱的表情动图来鼓励你。
 
-For example if there is an image subfolder under your extension project workspace:
+## 安装
 
-\!\[feature X\]\(images/feature-x.png\)
+1. 在 VSCode 插件市场中搜索 catgpt，并点击安装。
+2. 在 VSCode 中按下 `Ctrl+Shift+P`，输入 `Extensions: Install Extension`，然后输入 `catgpt`，选择 catgpt 插件进行安装。
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## 使用
 
-## Requirements
+1. 打开 VSCode 编辑器，创建一个代码文件。
+2. 在编辑器中右键选择 catgpt 插件，然后选择对应的功能进行使用。
+3. 如果你需要鼓励和支持，可以在插件中查看各种可爱的表情动图。
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+## 贡献
 
-## Extension Settings
+如果你有任何问题或者建议，欢迎提出 issue 或者 pr。
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+## 许可证
 
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+catgpt 使用 MIT 许可证。详见 LICENSE 文件。
