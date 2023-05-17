@@ -26,15 +26,33 @@
     "commands": [
       {
         "command": "catgpt.codeOptimize",
-        "title": "CatGPT: 评分优化"
+        "title": "CatGPT: 代码优化"
+      },
+      {
+        "command": "catgpt.codeExplain",
+        "title": "CatGPT: 代码解释"
+      },
+      {
+        "command": "catgpt.codeScore",
+        "title": "CatGPT: 代码评分"
       }
     ],
     "menus": {
       "editor/context": [
         {
           "command": "catgpt.codeOptimize",
-          "when": "editorHasSelection",
-          "group": "catgpt-menu-group@1"
+          "group": "catgpt-menu-group@1",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.codeExplain",
+          "group": "catgpt-menu-group@1",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.codeScore",
+          "group": "catgpt-menu-group@1",
+          "when": "editorTextFocus"
         }
       ]
     },

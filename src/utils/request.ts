@@ -4,9 +4,9 @@ import {StreamRequestCbParams} from '../@types/utils';
 import axios from 'axios';
 import {get} from 'lodash';
 
-const MODEL = 'gpt-3.5-turbo'; //模型
-const AUTH = 'XXXXX'; //秘钥
-const PROXY = 'XXXXX'; //代理
+const MODEL = 'gpt-4'; //模型
+const AUTH = 'Bearer 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'; //秘钥
+const PROXY = 'https://ai.xrender.fun/proxy/v1/chat/completions'; //代理
 
 /** 普通请求 */
 export const request = async (params: any, cb: (params: StreamRequestCbParams) => void) => {
@@ -18,7 +18,7 @@ export const request = async (params: any, cb: (params: StreamRequestCbParams) =
         model: MODEL,
         frequency_penalty: 0,
         presence_penalty: 1,
-        max_tokens: 2000,
+        max_tokens: 2048,
         temperature: 0.5,
         top_p: 0.8,
         stream: false,
@@ -30,7 +30,7 @@ export const request = async (params: any, cb: (params: StreamRequestCbParams) =
       },
     });
     const content = get(response, 'data.choices[0].message.content');
-    cb(content);
+    cb({content, done: true});
   } catch (e) {
     console.error('普通请求错误: ' + e);
   }
@@ -46,7 +46,7 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
         model: MODEL,
         frequency_penalty: 0,
         presence_penalty: 1,
-        max_tokens: 2000,
+        max_tokens: 2048,
         temperature: 0.5,
         top_p: 0.8,
         stream: true,
@@ -58,13 +58,28 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
       },
       responseType: 'stream',
     });
-    const stream = response.data;
-    stream.on('data', (data: any) => {
-      data = data.toString().split('data: ')[1];
-      if (!data || data === '[DONE]') return;
-      const dataObj = JSON.parse(data);
-      const content = get(dataObj, 'choices[0].delta.content', '');
-      cb(content);
+    let content = '';
+    //流式输出
+    response.data.on('data', (data: Buffer) => {
+      const lines = data
+        ?.toString()
+        ?.split('\n')
+        .filter(line => line.trim() !== '');
+      for (const line of lines) {
+        const message = line.replace(/^data: /, '');
+        if (!message || message === '[DONE]') break;
+        try {
+          const obj = JSON.parse(message);
+          content += get(obj, 'choices[0].delta.content', '');
+          cb({content, done: false});
+        } catch (e) {
+          console.error('流式解析错误: ' + e);
+        }
+      }
+    });
+    //判断结束
+    response.data.on('end', () => {
+      cb({content, done: true});
     });
   } catch (e) {
     console.error('流式请求错误: ' + e);

@@ -11,6 +11,5 @@ export interface StreamRequestOptions {
 //流式请求回调
 export interface StreamRequestCbParams {
   done: boolean;
-  success: boolean;
   content: string;
 }
