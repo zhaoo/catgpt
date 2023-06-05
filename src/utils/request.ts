@@ -3,13 +3,15 @@
 import {StreamRequestCbParams} from '../@types/utils';
 import axios from 'axios';
 import {get} from 'lodash';
+import * as vscode from 'vscode';
 
-const MODEL = 'gpt-4'; //模型
-const AUTH = 'Bearer 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'; //秘钥
-const PROXY = 'https://ai.xrender.fun/proxy/v1/chat/completions'; //代理
+const config = vscode.workspace.getConfiguration('catgpt'); //vscode配置
+const MODEL = config.get('model') || 'gpt-3.5-turbo'; //模型
+const AUTH: string = config.get('auth') || 'Bearer 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'; //秘钥
+const PROXY: string = config.get('proxy') || 'https://ai.xrender.fun/proxy/v1/chat/completions'; //代理
 
 /** 普通请求 */
-export const request = async (params: any, cb: (params: StreamRequestCbParams) => void) => {
+export const request = async (params: any, cb?: (params: StreamRequestCbParams) => void) => {
   try {
     const response = await axios({
       url: PROXY,
@@ -17,7 +19,7 @@ export const request = async (params: any, cb: (params: StreamRequestCbParams) =
       data: JSON.stringify({
         model: MODEL,
         frequency_penalty: 0,
-        presence_penalty: 1,
+        presence_penalty: 0,
         max_tokens: 2048,
         temperature: 0.5,
         top_p: 0.8,
@@ -30,7 +32,8 @@ export const request = async (params: any, cb: (params: StreamRequestCbParams) =
       },
     });
     const content = get(response, 'data.choices[0].message.content');
-    cb({content, done: true});
+    cb && cb({content, section: content, done: true});
+    return content;
   } catch (e) {
     console.error('普通请求错误: ' + e);
   }
@@ -45,7 +48,7 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
       data: JSON.stringify({
         model: MODEL,
         frequency_penalty: 0,
-        presence_penalty: 1,
+        presence_penalty: 0,
         max_tokens: 2048,
         temperature: 0.5,
         top_p: 0.8,
@@ -58,7 +61,8 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
       },
       responseType: 'stream',
     });
-    let content = '';
+    let content = '',
+      section = '';
     //流式输出
     response.data.on('data', (data: Buffer) => {
       const lines = data
@@ -70,8 +74,9 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
         if (!message || message === '[DONE]') break;
         try {
           const obj = JSON.parse(message);
-          content += get(obj, 'choices[0].delta.content', '');
-          cb({content, done: false});
+          section = get(obj, 'choices[0].delta.content', '');
+          content += section;
+          cb({content, section, done: false});
         } catch (e) {
           console.error('流式解析错误: ' + e);
         }
@@ -79,9 +84,17 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
     });
     //判断结束
     response.data.on('end', () => {
-      cb({content, done: true});
+      cb({content, section, done: true});
     });
   } catch (e) {
     console.error('流式请求错误: ' + e);
   }
+};
+
+/** 登录BUC */
+export const login = async () => {
+  const res = await axios({
+    url: 'https://fl-fastai.pre-fc.alibaba-inc.com/api/userInfo',
+    method: 'get',
+  });
 };

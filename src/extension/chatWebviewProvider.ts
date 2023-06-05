@@ -17,12 +17,14 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
   }
 
   /** 开始询问 */
-  public search(prompt?: string) {
+  public async search(prompt?: string, showPrompt = true) {
+    const user = this.context.globalState.get('user');
     this.view?.show?.(true);
-    this.view?.webview.postMessage({type: 'ask', value: {content: prompt, key: generateID()}});
+    showPrompt && this.view?.webview.postMessage({type: 'ask', value: {content: prompt, key: generateID(), user}});
     const answerKey = generateID();
+
     streamRequest({messages: [{role: 'user', content: prompt}]}, ({content, done}) =>
-      this.view?.webview.postMessage({type: 'answer', value: {content, key: answerKey, done}}),
+      this.view?.webview.postMessage({type: 'answer', value: {content, key: answerKey, done, user}}),
     );
   }
 

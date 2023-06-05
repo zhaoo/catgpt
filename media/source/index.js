@@ -4,15 +4,13 @@
   const vscode = acquireVsCodeApi(); //vscode方法
 
   /** 角色 */
-  const ROLE_MAP = {
-    ai: {
-      avatar: 'https://gw.alicdn.com/imgextra/i4/O1CN01vEyvLV1YGFJ2izPks_!!6000000003031-0-tps-200-200.jpg',
-      nickname: 'CatGPT',
-    },
-    user: {
-      avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
-      nickname: 'User',
-    },
+  const AI_USERINFO = {
+    avatar: 'https://gw.alicdn.com/imgextra/i4/O1CN01vEyvLV1YGFJ2izPks_!!6000000003031-0-tps-200-200.jpg',
+    nickname: 'CatGPT',
+  };
+  const USER_USERINFO = {
+    avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
+    nickname: 'User',
   };
 
   /** 代码块修复 */
@@ -43,15 +41,20 @@
   });
 
   /** 生成模板 */
-  const generateTemplate = ({type, content, key}) => `
-    <div class="chat-wrapper ${type}" ${key && 'id="' + key + '"'}>
-      <div class="chat-user">
-        <img class="chat-avatar" src="${ROLE_MAP[type]['avatar']}" />
-        <span class="chat-nickname">${ROLE_MAP[type]['nickname']}</span>
+  const generateTemplate = ({type, content, key, user}) => {
+    const {nickname, avatar} = JSON.parse(user || '{}');
+    return `
+      <div class="chat-wrapper ${type}" ${key && 'id="' + key + '"'}>
+        <div class="chat-user">
+          <img class="chat-avatar" src="${type === 'ai' ? AI_USERINFO.avatar : avatar || USER_USERINFO.avatar}" />
+          <span class="chat-nickname">${
+            type === 'ai' ? AI_USERINFO.nickname : nickname || USER_USERINFO.nickname
+          }</span>
+        </div>
+        <p class="chat-answer chat-streaming">${content}</p>
       </div>
-      <p class="chat-answer chat-streaming">${content}</p>
-    </div>
-  `;
+    `;
+  };
 
   /** 绑定事件 */
   document.getElementById('chat-search').addEventListener('click', () => handleSearch()); //搜索按钮
@@ -88,7 +91,7 @@
   };
 
   /** 添加消息 */
-  const addChat = ({type, content, key, done}) => {
+  const addChat = ({type, content, key, done, user}) => {
     //代码处理
     const markedContent = marked.parse(fixCodeBlocks(content));
 
@@ -100,7 +103,7 @@
     } else {
       const containerNode = document.getElementById('chat-container');
       const newNode = document.createElement('div');
-      newNode.innerHTML = generateTemplate({type, content: markedContent, key});
+      newNode.innerHTML = generateTemplate({type, content: markedContent, key, user});
       containerNode.appendChild(newNode);
     }
 

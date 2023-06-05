@@ -12,4 +12,5 @@ export interface StreamRequestOptions {
 export interface StreamRequestCbParams {
   done: boolean;
   content: string;
+  section: string;
 }
