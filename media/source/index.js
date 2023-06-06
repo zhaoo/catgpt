@@ -5,11 +5,11 @@
 
   /** 角色 */
   const AI_USERINFO = {
-    avatar: 'https://gw.alicdn.com/imgextra/i4/O1CN01vEyvLV1YGFJ2izPks_!!6000000003031-0-tps-200-200.jpg',
+    avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
     nickname: 'CatGPT',
   };
   const USER_USERINFO = {
-    avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
+    avatar: 'https://gw.alicdn.com/imgextra/i3/O1CN01CRKCLh1dMGbjhCL1W_!!6000000003721-0-tps-147-150.jpg',
     nickname: 'User',
   };
 

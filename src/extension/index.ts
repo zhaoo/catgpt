@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
     {
       type: 'TextEditorCommand',
       commandId: 'catgpt.edit-insert',
-      commandHandler: (editor: vscode.TextEditor) => handleEditInsert(editor),
+      commandHandler: (editor: vscode.TextEditor) => handleEditInsert(editor, 'stream'),
     },
     {
       type: 'WebviewViewProvider',

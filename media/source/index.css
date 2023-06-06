@@ -125,7 +125,8 @@ pre {
   vertical-align: baseline;
 }
 
-.chat-copy {
+.chat-copy,
+.chat-insert {
   position: absolute;
   right: 0;
   top: 8px;

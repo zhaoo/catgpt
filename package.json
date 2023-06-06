@@ -4,7 +4,7 @@
   "description": "鼓励猫，让喵喵教你写代码吧~",
   "version": "1.0.0",
   "engines": {
-    "vscode": "^1.41.0"
+    "vscode": "^1.60.0"
   },
   "categories": [
     "Other"

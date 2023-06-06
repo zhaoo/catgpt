@@ -62,7 +62,9 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
       responseType: 'stream',
     });
     let content = '',
-      section = '';
+      section = '',
+      index = 0,
+      temp = '';
     //流式输出
     response.data.on('data', (data: Buffer) => {
       const lines = data
@@ -70,8 +72,14 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
         ?.split('\n')
         .filter(line => line.trim() !== '');
       for (const line of lines) {
-        const message = line.replace(/^data: /, '');
+        index++;
+        let message = line.replace(/^data: /, '');
         if (!message || message === '[DONE]') break;
+        if (index === 2) {
+          temp = message;
+          break;
+        }
+        if (index === 3) message = temp + message;
         try {
           const obj = JSON.parse(message);
           section = get(obj, 'choices[0].delta.content', '');

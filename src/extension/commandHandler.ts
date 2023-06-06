@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode';
 import {generatePrompt} from '../utils';
-import {request} from '../utils/request';
+import {request, streamRequest} from '../utils/request';
 
 /** 登录BUC */
 export const handleLogin = async (context: vscode.ExtensionContext) => {
@@ -51,12 +51,36 @@ export const handleMenu = (editor: vscode.TextEditor, key: string, type: string,
 };
 
 /** 插入编辑器 */
-export const handleEditInsert = async (editor: vscode.TextEditor) => {
+export const handleEditInsert = async (editor: vscode.TextEditor, insertType: 'stream' | 'normal') => {
   const language = editor.document.languageId; //当前语言
   const position = editor.selection.active; //插入位置
   const lineText = editor.document.lineAt(position.line).text; //选中文本
   vscode.commands.executeCommand('editor.action.insertLineAfter'); //光标锚到下一行
   const prompt = `帮我生成一段 ${language} 代码，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
+
+  //流式插入
+  const streamInsert = () => {
+    return new Promise(resolve => {
+      let line = 1,
+        textTemp = '';
+      streamRequest({messages: [{role: 'user', content: prompt}]}, ({section, done}) => {
+        if (section.indexOf('\n') !== -1) {
+          const matchs: any = section.match(/(.*)\n(.*)/);
+          textTemp += matchs[1];
+          editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), textTemp + '\n'));
+          line++;
+          textTemp = matchs[2];
+        } else {
+          textTemp += section;
+        }
+        if (done) {
+          editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), textTemp + '\n'));
+          resolve(true);
+        }
+      });
+    });
+  };
+
   vscode.window.withProgress(
     {
       location: vscode.ProgressLocation.Notification,
@@ -64,9 +88,13 @@ export const handleEditInsert = async (editor: vscode.TextEditor) => {
       cancellable: true,
     },
     async (progress, token) => {
-      const genCode = await request({messages: [{role: 'user', content: prompt}]});
-      if (token.isCancellationRequested) return;
-      editor.edit(editBuilder => editBuilder.insert(position.translate(1, 0), genCode));
+      if (insertType === 'stream') {
+        await streamInsert();
+      } else {
+        const genCode = await request({messages: [{role: 'user', content: prompt}]});
+        if (token.isCancellationRequested) return;
+        editor.edit(editBuilder => editBuilder.insert(position.translate(1, 0), genCode));
+      }
     },
   );
 };
