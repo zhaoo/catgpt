@@ -40,7 +40,13 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
         case 'search':
           return this.search(data.value);
         case 'copy':
-          return vscode.window.showInformationMessage('代码已复制到剪切板~');
+          return vscode.window.showInformationMessage('代码已“C”到剪切板，赶紧去“V”吧~');
+        case 'insert': {
+          const position = vscode.window.activeTextEditor?.selection.active;
+          if (!position) return;
+          vscode.window.activeTextEditor?.edit(editBuilder => editBuilder.insert(position.translate(1, 0), data.value));
+          vscode.window.showInformationMessage('代码已插入编辑器，是不是比“CV”还快~');
+        }
       }
     });
 

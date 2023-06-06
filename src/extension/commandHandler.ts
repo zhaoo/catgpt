@@ -59,11 +59,12 @@ export const handleEditInsert = async (editor: vscode.TextEditor, insertType: 's
   const prompt = `帮我生成一段 ${language} 代码，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
 
   //流式插入
-  const streamInsert = () => {
+  const streamInsert = (token: vscode.CancellationToken) => {
     return new Promise(resolve => {
       let line = 1,
         textTemp = '';
       streamRequest({messages: [{role: 'user', content: prompt}]}, ({section, done}) => {
+        if (token.isCancellationRequested) return resolve(false);
         if (section.indexOf('\n') !== -1) {
           const matchs: any = section.match(/(.*)\n(.*)/);
           textTemp += matchs[1];
@@ -75,7 +76,7 @@ export const handleEditInsert = async (editor: vscode.TextEditor, insertType: 's
         }
         if (done) {
           editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), textTemp + '\n'));
-          resolve(true);
+          return resolve(true);
         }
       });
     });
@@ -89,7 +90,7 @@ export const handleEditInsert = async (editor: vscode.TextEditor, insertType: 's
     },
     async (progress, token) => {
       if (insertType === 'stream') {
-        await streamInsert();
+        await streamInsert(token);
       } else {
         const genCode = await request({messages: [{role: 'user', content: prompt}]});
         if (token.isCancellationRequested) return;

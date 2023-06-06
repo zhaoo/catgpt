@@ -3,6 +3,8 @@
 (function () {
   const vscode = acquireVsCodeApi(); //vscode方法
 
+  const btnNode = document.getElementById('chat-search'); //按钮
+
   /** 角色 */
   const AI_USERINFO = {
     avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
@@ -10,7 +12,7 @@
   };
   const USER_USERINFO = {
     avatar: 'https://gw.alicdn.com/imgextra/i3/O1CN01CRKCLh1dMGbjhCL1W_!!6000000003721-0-tps-147-150.jpg',
-    nickname: 'User',
+    nickname: '匿名用户',
   };
 
   /** 代码块修复 */
@@ -59,7 +61,9 @@
   /** 绑定事件 */
   document.getElementById('chat-search').addEventListener('click', () => handleSearch()); //搜索按钮
   document.getElementById('chat-clear').addEventListener('click', () => handleClear()); //清空按钮
-  document.getElementById('chat-input').addEventListener('keyup', e => e.key === 'Enter' && handleSearch()); //输入框回车
+  document
+    .getElementById('chat-input')
+    .addEventListener('keyup', e => e.key === 'Enter' && !btnNode.disabled && handleSearch()); //输入框回车
 
   /** 收到消息 */
   window.addEventListener('message', event => {
@@ -78,6 +82,7 @@
 
   /** 绑定搜索 */
   const handleSearch = () => {
+    btnNode.disabled = true;
     const inputNode = document.getElementById('chat-input');
     const prompt = inputNode.value;
     inputNode.value = '';
@@ -108,17 +113,26 @@
     }
 
     if (done) {
+      btnNode.disabled = false;
       answerNode.classList.remove('chat-streaming'); //干掉Loading
-      //复制代码
       const preNodes = document.querySelectorAll('pre');
       preNodes.forEach(preNode => {
+        //添加按钮
         const codeText = preNode.querySelector('code').innerText;
         preNode.insertAdjacentHTML('afterbegin', `<a class="chat-copy">复制</a>`);
+        preNode.insertAdjacentHTML('afterbegin', `<a class="chat-insert">插入</a>`);
+        //复制=事件
         const copyNode = preNode.querySelector('.chat-copy');
         copyNode.addEventListener('click', e => {
           e.preventDefault();
           navigator.clipboard.writeText(codeText);
           vscode.postMessage({type: 'copy', value: codeText});
+        });
+        //插入事件
+        const insertNode = preNode.querySelector('.chat-insert');
+        insertNode.addEventListener('click', e => {
+          e.preventDefault();
+          vscode.postMessage({type: 'insert', value: codeText});
         });
       });
     }

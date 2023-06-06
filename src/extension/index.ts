@@ -104,7 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
       type: 'CompletionItemProvider',
       selector: {scheme: 'file'},
       provider: new CompletionItemProvider(),
-      paramtriggerCharacters: ':',
+      paramtriggerCharacters: ' ',
     },
   ];
 

@@ -59,7 +59,8 @@ pre {
   outline: none;
 }
 
-.chat-search {
+.chat-search,
+.chat-search[disabled] {
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -71,6 +72,10 @@ pre {
   outline: none;
   width: auto;
   background-image: linear-gradient(144deg, #ffe891 0%, #ffe208 100%);
+}
+
+.chat-search[disabled] {
+  filter: grayscale(1);
 }
 
 .chat-container {
@@ -128,8 +133,6 @@ pre {
 .chat-copy,
 .chat-insert {
   position: absolute;
-  right: 0;
-  top: 8px;
   cursor: pointer;
   font-size: 10px;
   padding: 2px 6px;
@@ -137,6 +140,16 @@ pre {
   font-weight: var(--chakra-fontWeights-medium);
   background: var(--vscode-input-background);
   color: var(--vscode-sideBarTitle-foreground);
+}
+
+.chat-copy {
+  right: 0;
+  top: 8px;
+}
+
+.chat-insert {
+  right: 40px;
+  top: 8px;
 }
 
 .chat-clear {

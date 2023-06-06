@@ -98,11 +98,3 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
     console.error('流式请求错误: ' + e);
   }
 };
-
-/** 登录BUC */
-export const login = async () => {
-  const res = await axios({
-    url: 'https://fl-fastai.pre-fc.alibaba-inc.com/api/userInfo',
-    method: 'get',
-  });
-};
