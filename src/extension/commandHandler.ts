@@ -37,17 +37,17 @@ export const handleLogin = async (context: vscode.ExtensionContext) => {
   );
 };
 
-/** 菜单操作 */
-export const handleMenu = (editor: vscode.TextEditor, key: string, type: string, extend: any = {}) => {
-  const selectorText = editor.document.getText(editor.selection); //选中的文本
-  if (!selectorText) return;
+/** 问答操作 */
+export const handleTriggerChat = (key: string, type: string, chatViewProvider: any, extend: any = {}) => {
+  let {showPrompt = true, content = '', editor} = extend;
   switch (type) {
-    //唤起聊天框
-    case 'trigger-chat': {
-      const {showPrompt = true, chatViewProvider} = extend;
-      return chatViewProvider.search(generatePrompt(key, selectorText), showPrompt); //执行搜索
-    }
+    case 'edit-selector': //编辑器选中文本
+      content = editor.document.getText(editor.selection);
+      break;
+    case 'input': //函数传入
+      break;
   }
+  return chatViewProvider.search(generatePrompt(key, content), showPrompt); //执行搜索
 };
 
 /** 插入编辑器 */

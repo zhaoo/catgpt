@@ -34,7 +34,15 @@
       },
       {
         "command": "catgpt.code-explain",
-        "title": "代码释义"
+        "title": "代码解释"
+      },
+      {
+        "command": "catgpt.code-function-explain",
+        "title": "函数解释"
+      },
+      {
+        "command": "catgpt.code-function-refactor",
+        "title": "函数重构"
       },
       {
         "command": "catgpt.code-score",
@@ -217,6 +225,16 @@
           "description": "代理地址",
           "order": 3,
           "default": "https://ai.xrender.fun/proxy/v1/chat/completions"
+        },
+        "catgpt.aiNickname": {
+          "type": "string",
+          "description": "AI昵称",
+          "default": "CatGPT"
+        },
+        "catgpt.aiAvatar": {
+          "type": "string",
+          "description": "AI头像",
+          "default": "https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg"
         }
       }
     }

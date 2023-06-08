@@ -2,7 +2,6 @@
 
 (function () {
   const vscode = acquireVsCodeApi(); //vscode方法
-
   const btnNode = document.getElementById('chat-search'); //按钮
 
   /** 角色 */
@@ -43,14 +42,17 @@
   });
 
   /** 生成模板 */
-  const generateTemplate = ({type, content, key, user}) => {
+  const generateTemplate = ({type, content, key, user, ai = {}}) => {
     const {nickname, avatar} = JSON.parse(user || '{}');
+    const {nickname: aiNickname, avatar: aiAvatar} = ai;
     return `
       <div class="chat-wrapper ${type}" ${key && 'id="' + key + '"'}>
         <div class="chat-user">
-          <img class="chat-avatar" src="${type === 'ai' ? AI_USERINFO.avatar : avatar || USER_USERINFO.avatar}" />
+          <img class="chat-avatar" src="${
+            type === 'ai' ? aiAvatar || AI_USERINFO.avatar : avatar || USER_USERINFO.avatar
+          }" />
           <span class="chat-nickname">${
-            type === 'ai' ? AI_USERINFO.nickname : nickname || USER_USERINFO.nickname
+            type === 'ai' ? aiNickname || AI_USERINFO.nickname : nickname || USER_USERINFO.nickname
           }</span>
         </div>
         <p class="chat-answer chat-streaming">${content}</p>
@@ -96,7 +98,7 @@
   };
 
   /** 添加消息 */
-  const addChat = ({type, content, key, done, user}) => {
+  const addChat = ({type, content, key, done, user, ai}) => {
     //代码处理
     const markedContent = marked.parse(fixCodeBlocks(content));
 
@@ -108,7 +110,7 @@
     } else {
       const containerNode = document.getElementById('chat-container');
       const newNode = document.createElement('div');
-      newNode.innerHTML = generateTemplate({type, content: markedContent, key, user});
+      newNode.innerHTML = generateTemplate({type, content: markedContent, key, user, ai});
       containerNode.appendChild(newNode);
     }
 

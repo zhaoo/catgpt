@@ -7,6 +7,7 @@ import {streamRequest} from '../utils/request';
 export class ChatWebviewProvider implements vscode.WebviewViewProvider {
   constructor(private readonly context: vscode.ExtensionContext) {}
   private static command: string = 'catgpt.chatWebview'; //事件ID
+  private config = vscode.workspace.getConfiguration('catgpt'); //配置
   private view?: vscode.WebviewView; //视图
 
   /** 注册事件 */
@@ -19,12 +20,17 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
   /** 开始询问 */
   public async search(prompt?: string, showPrompt = true) {
     const user = this.context.globalState.get('user');
+    const ai = {nickname: this.config.get('aiNickname'), avatar: this.config.get('aiAvatar')};
     this.view?.show?.(true);
-    showPrompt && this.view?.webview.postMessage({type: 'ask', value: {content: prompt, key: generateID(), user}});
+    showPrompt &&
+      this.view?.webview.postMessage({
+        type: 'ask',
+        value: {content: prompt, key: generateID(), user, ai},
+      });
     const answerKey = generateID();
 
     streamRequest({messages: [{role: 'user', content: prompt}]}, ({content, done}) =>
-      this.view?.webview.postMessage({type: 'answer', value: {content, key: answerKey, done, user}}),
+      this.view?.webview.postMessage({type: 'answer', value: {content, key: answerKey, done, user, ai}}),
     );
   }
 

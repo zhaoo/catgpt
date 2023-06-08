@@ -24,6 +24,12 @@ export const generatePrompt = (key: string, ...args: any) => {
     case 'code-optimize': //代码优化
       return `给这段代码提出优化建议，代码如下：\n${args[0]}`;
 
+    case 'code-function-explain': //函数解释
+      return `我希望你能充当代码解释者，阐明这段函数的主要功能: \n${args[0]}`;
+
+    case 'code-function-refactor': //函数优化
+      return `优化这段函数代码，使代码更简洁，只需输出优化后的代码: \n${args[0]}`;
+
     case 'code-explain': //代码解释
       return `我希望你能充当代码解释者，阐明代码的语法和语义。代码如下：\n${args[0]}`;
 
