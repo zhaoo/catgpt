@@ -47,6 +47,7 @@ export const handleTriggerChat = (key: string, type: string, chatViewProvider: a
     case 'input': //函数传入
       break;
   }
+  content = content.trim();
   return chatViewProvider.search(generatePrompt(key, content), showPrompt); //执行搜索
 };
 

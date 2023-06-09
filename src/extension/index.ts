@@ -87,7 +87,7 @@ export function activate(context: vscode.ExtensionContext) {
     },
     {
       type: 'TextEditorCommand',
-      commandId: 'catgpt.code-inspire-programming',
+      commandId: 'catgpt.tool-inspire-programming',
       commandHandler: (editor: vscode.TextEditor) =>
         handleTriggerChat('code-inspire-programming', 'edit-selector', chatViewProvider, {showPrompt: false, editor}),
     },
@@ -114,12 +114,6 @@ export function activate(context: vscode.ExtensionContext) {
       commandId: 'catgpt.tool-problems-solution',
       commandHandler: (editor: vscode.TextEditor) =>
         handleTriggerChat('tool-problems-solution', 'edit-selector', chatViewProvider, {showPrompt: false, editor}),
-    },
-    {
-      type: 'TextEditorCommand',
-      commandId: 'catgpt.qa-list',
-      commandHandler: (editor: vscode.TextEditor) =>
-        handleTriggerChat('qa-list', 'edit-selector', chatViewProvider, {showPrompt: false, editor}),
     },
     {
       type: 'TextEditorCommand',

@@ -29,10 +29,6 @@
         "title": "代码插入"
       },
       {
-        "command": "catgpt.code-optimize",
-        "title": "代码优化"
-      },
-      {
         "command": "catgpt.code-explain",
         "title": "代码解释"
       },
@@ -61,7 +57,7 @@
         "title": "编写文档"
       },
       {
-        "command": "catgpt.code-inspire-programming",
+        "command": "catgpt.tool-inspire-programming",
         "title": "启发式编程"
       },
       {
@@ -79,10 +75,6 @@
       {
         "command": "catgpt.tool-problems-solution",
         "title": "解决编程相关问答"
-      },
-      {
-        "command": "catgpt.qa-list",
-        "title": "测试用例"
       },
       {
         "command": "catgpt.login",
@@ -109,37 +101,32 @@
       ],
       "tool": [
         {
-          "command": "catgpt.tool-regex",
-          "group": "catgpt-menu-group@3",
+          "command": "catgpt.tool-inspire-programming",
+          "group": "catgpt-menu-group@1",
           "when": "editorTextFocus"
         },
         {
-          "command": "catgpt.tool-sql",
+          "command": "catgpt.tool-regex",
           "group": "catgpt-menu-group@4",
           "when": "editorTextFocus"
         },
         {
+          "command": "catgpt.tool-sql",
+          "group": "catgpt-menu-group@5",
+          "when": "editorTextFocus"
+        },
+        {
           "command": "catgpt.tool-console",
-          "group": "catgpt-menu-group@1",
+          "group": "catgpt-menu-group@3",
           "when": "editorTextFocus"
         },
         {
           "command": "catgpt.tool-problems-solution",
           "group": "catgpt-menu-group@2",
           "when": "editorTextFocus"
-        },
-        {
-          "command": "catgpt.qa-list",
-          "group": "catgpt-menu-group@5",
-          "when": "editorTextFocus"
         }
       ],
       "code": [
-        {
-          "command": "catgpt.code-optimize",
-          "group": "catgpt-menu-group@2",
-          "when": "editorTextFocus"
-        },
         {
           "command": "catgpt.code-explain",
           "group": "catgpt-menu-group@4",
@@ -163,11 +150,6 @@
         {
           "command": "catgpt.code-documentation",
           "group": "catgpt-menu-group@6",
-          "when": "editorTextFocus"
-        },
-        {
-          "command": "catgpt.code-inspire-programming",
-          "group": "catgpt-menu-group@1",
           "when": "editorTextFocus"
         }
       ]

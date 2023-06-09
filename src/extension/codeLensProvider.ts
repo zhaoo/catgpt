@@ -12,7 +12,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
     let match;
 
     while ((match = funcRegex.exec(text))) {
-      const [content, name, parameters, body] = match;
+      const [content, name, params, body] = match;
       const range = new vscode.Range(
         document.positionAt(match.index),
         document.positionAt(match.index + content.length),
@@ -24,7 +24,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
       });
       codeLenses.push(explainCodeLens);
       const refactorCodeLens = new vscode.CodeLens(range, {
-        title: '优化',
+        title: '重构',
         command: 'catgpt.code-function-refactor',
         arguments: [content],
       });
@@ -32,7 +32,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
     }
 
     while ((match = arrowFuncRegex.exec(text))) {
-      const [content, name, parameters, body] = match;
+      const [content, keyword, name, params, body] = match;
       const range = new vscode.Range(
         document.positionAt(match.index),
         document.positionAt(match.index + content.length),
@@ -44,7 +44,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
       });
       codeLenses.push(explainCodeLens);
       const refactorCodeLens = new vscode.CodeLens(range, {
-        title: '优化',
+        title: '重构',
         command: 'catgpt.code-function-refactor',
         arguments: [content],
       });
