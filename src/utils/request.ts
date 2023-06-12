@@ -41,6 +41,7 @@ export const request = async (params: any, cb?: (params: StreamRequestCbParams) 
 
 /** 流式请求 */
 export const streamRequest = async (params: any, cb: (params: StreamRequestCbParams) => void) => {
+  const cancelToken = axios.CancelToken.source(); //中断标识
   try {
     const response = await axios({
       url: 'https://ai.xrender.fun/proxy/v1/chat/completions',
@@ -59,13 +60,15 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
         'content-type': 'application/json',
         authorization: AUTH,
       },
+      cancelToken: cancelToken.token,
       responseType: 'stream',
     });
+
+    //流式输出
     let content = '',
       section = '',
       index = 0,
       temp = '';
-    //流式输出
     response.data.on('data', (data: Buffer) => {
       const lines = data
         ?.toString()
@@ -90,11 +93,13 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
         }
       }
     });
-    //判断结束
+
+    //输出结束
     response.data.on('end', () => {
       cb({content, section, done: true});
     });
   } catch (e) {
     console.error('流式请求错误: ' + e);
   }
+  return cancelToken;
 };

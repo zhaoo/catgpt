@@ -23,11 +23,11 @@ export function activate(context: vscode.ExtensionContext) {
       provider: chatViewProvider,
       options: {webviewOptions: {retainContextWhenHidden: true}},
     },
-    {
-      type: 'HoverProvider',
-      selector: {scheme: 'file'},
-      provider: {provideHover},
-    },
+    // {
+    //   type: 'HoverProvider',
+    //   selector: {scheme: 'file'},
+    //   provider: {provideHover},
+    // },
     {
       type: 'CompletionItemProvider',
       selector: {scheme: 'file'},

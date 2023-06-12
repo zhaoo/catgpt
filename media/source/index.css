@@ -152,13 +152,23 @@ pre {
   top: 8px;
 }
 
+.chat-cancel,
 .chat-clear {
   position: absolute;
   cursor: pointer;
-  top: 10px;
-  right: 10px;
   width: 20px;
   height: 20px;
   fill: var(--vscode-foreground);
   z-index: 1;
+}
+
+.chat-clear {
+  top: 10px;
+  right: 10px;
+}
+
+.chat-cancel {
+  top: 10px;
+  right: 40px;
+  display: none;
 }

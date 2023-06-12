@@ -1,18 +1,48 @@
 /** @format */
 
+/** 角色 */
+const AI_USERINFO = {
+  avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
+  nickname: 'CatGPT',
+};
+const USER_USERINFO = {
+  avatar: 'https://gw.alicdn.com/imgextra/i3/O1CN01CRKCLh1dMGbjhCL1W_!!6000000003721-0-tps-147-150.jpg',
+  nickname: '匿名用户',
+};
+
 (function () {
   const vscode = acquireVsCodeApi(); //vscode方法
-  const btnNode = document.getElementById('chat-search'); //按钮
+  const searchBtnNode = document.getElementById('chat-search'); //搜索按钮
+  const cancelNode = document.getElementById('chat-cancel'); //取消按钮
 
-  /** 角色 */
-  const AI_USERINFO = {
-    avatar: 'https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg',
-    nickname: 'CatGPT',
+  /** 输出控制 */
+  function OutputControl() {
+    this.status = 'init'; //init:初始化、processing:输出中、finished:输出完成
+  }
+  //开始输出
+  OutputControl.prototype.start = function (callback) {
+    this.status = 'processing';
+    searchBtnNode.disabled = true;
+    cancelNode.style.display = 'block';
+    callback && callback();
   };
-  const USER_USERINFO = {
-    avatar: 'https://gw.alicdn.com/imgextra/i3/O1CN01CRKCLh1dMGbjhCL1W_!!6000000003721-0-tps-147-150.jpg',
-    nickname: '匿名用户',
+  //结束输出
+  OutputControl.prototype.end = function (callback) {
+    this.status = 'finished';
+    searchBtnNode.disabled = false;
+    cancelNode.style.display = 'none';
+    callback && callback();
   };
+  //清空记录
+  OutputControl.prototype.clear = function (callback) {
+    this.status = 'init';
+    searchBtnNode.disabled = false;
+    cancelNode.style.display = 'none';
+    vscode.postMessage({type: 'cancel'});
+    callback && callback();
+  };
+
+  const outputControl = new OutputControl(); //输出控制实例
 
   /** 代码块修复 */
   function fixCodeBlocks(content) {
@@ -63,28 +93,26 @@
   /** 绑定事件 */
   document.getElementById('chat-search').addEventListener('click', () => handleSearch()); //搜索按钮
   document.getElementById('chat-clear').addEventListener('click', () => handleClear()); //清空按钮
-  document
-    .getElementById('chat-input')
-    .addEventListener('keyup', e => e.key === 'Enter' && !btnNode.disabled && handleSearch()); //输入框回车
+  document.getElementById('chat-cancel').addEventListener('click', () => handleCancle()); //停止按钮
+  document.getElementById('chat-input').addEventListener('keyup', e => e.key === 'Enter' && handleSearch()); //输入框回车
 
-  /** 收到消息 */
+  /** 绑定消息 */
   window.addEventListener('message', event => {
     const message = event.data;
     switch (message.type) {
       case 'ask': {
-        addChat({type: 'user', ...message.value});
+        handleOutput({type: 'user', ...message.value});
         break;
       }
       case 'answer': {
-        addChat({type: 'ai', ...message.value});
+        handleOutput({type: 'ai', ...message.value});
         break;
       }
     }
   });
 
-  /** 绑定搜索 */
+  /** 按钮搜索 */
   const handleSearch = () => {
-    btnNode.disabled = true;
     const inputNode = document.getElementById('chat-input');
     const prompt = inputNode.value;
     inputNode.value = '';
@@ -93,15 +121,23 @@
 
   /** 清空记录 */
   const handleClear = () => {
+    outputControl.clear();
     const containerNode = document.getElementById('chat-container');
     containerNode.innerHTML = '';
   };
 
-  /** 添加消息 */
-  const addChat = ({type, content, key, done, user, ai}) => {
+  /** 取消输出 */
+  const handleCancle = () => {
+    outputControl.end();
+    vscode.postMessage({type: 'cancel'});
+  };
+
+  /** 输出消息 */
+  const handleOutput = ({type, content, key, done, user, ai}) => {
+    //开始输出
+    outputControl.start();
     //代码处理
     const markedContent = marked.parse(fixCodeBlocks(content));
-
     //插入节点
     const node = document.getElementById(key);
     const answerNode = node && node.getElementsByClassName('chat-answer')[0];
@@ -115,7 +151,8 @@
     }
 
     if (done) {
-      btnNode.disabled = false;
+      //输出结束
+      outputControl.end();
       answerNode.classList.remove('chat-streaming'); //干掉Loading
       const preNodes = document.querySelectorAll('pre');
       preNodes.forEach(preNode => {
@@ -123,7 +160,7 @@
         const codeText = preNode.querySelector('code').innerText;
         preNode.insertAdjacentHTML('afterbegin', `<a class="chat-copy">复制</a>`);
         preNode.insertAdjacentHTML('afterbegin', `<a class="chat-insert">插入</a>`);
-        //复制=事件
+        //复制事件
         const copyNode = preNode.querySelector('.chat-copy');
         copyNode.addEventListener('click', e => {
           e.preventDefault();

@@ -13,4 +13,5 @@ export interface StreamRequestCbParams {
   done: boolean;
   content: string;
   section: string;
+  cancel?: () => void;
 }
