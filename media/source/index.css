@@ -4,7 +4,22 @@
   box-sizing: border-box;
 }
 
-body {
+code {
+  font-family: var(--vscode-editor-font-family) !important;
+}
+
+pre {
+  position: relative;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+pre > code,
+pre {
+  background-color: var(--vscode-textBlockQuote-background);
+}
+
+.chat-body {
   margin: 0 !important;
   padding: 0 !important;
   width: 100vw;
@@ -13,11 +28,11 @@ body {
   overflow: hidden;
 }
 
-footer {
+.chat-footer {
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 50px;
   padding: 4px 10px;
   display: flex;
@@ -27,7 +42,7 @@ footer {
   background-color: var(--vscode-menu-background);
 }
 
-.input {
+.chat-input {
   height: 20px;
   width: calc(100% - 60px);
   background-color: transparent;
@@ -40,11 +55,12 @@ footer {
   padding: var(--input-padding-vertical) var(--input-padding-horizontal);
 }
 
-.input:focus {
+.chat-input:focus {
   outline: none;
 }
 
-.button {
+.chat-search,
+.chat-search[disabled] {
   cursor: pointer;
   display: flex;
   justify-content: center;
@@ -58,16 +74,22 @@ footer {
   background-image: linear-gradient(144deg, #ffe891 0%, #ffe208 100%);
 }
 
+.chat-search[disabled] {
+  filter: grayscale(1);
+}
+
 .chat-container {
   width: 100vw;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding: 0 !important;
+  padding: 0 0 50px 0 !important;
   flex: 1;
   overflow-y: scroll;
   background-color: transparent;
   scroll-behavior: smooth;
   max-height: calc(100vh - 50px);
+  position: relative;
 }
 
 .chat-wrapper {
@@ -95,4 +117,58 @@ footer {
 
 .chat-nickname {
   margin-left: 10px;
+}
+
+.chat-streaming > :not(ol):not(ul):not(pre):last-child:after,
+.chat-streaming > ol:last-child li:last-child:after,
+.chat-streaming > pre:last-child code:after,
+.chat-streaming > ul:last-child li:last-child:after {
+  -webkit-animation: blink 1s steps(5, start) infinite;
+  animation: blink 1s steps(5, start) infinite;
+  content: '▋';
+  margin-left: 0.25rem;
+  vertical-align: baseline;
+}
+
+.chat-copy,
+.chat-insert {
+  position: absolute;
+  cursor: pointer;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: var(--chakra-fontWeights-medium);
+  background: var(--vscode-input-background);
+  color: var(--vscode-sideBarTitle-foreground);
+}
+
+.chat-copy {
+  right: 0;
+  top: 8px;
+}
+
+.chat-insert {
+  right: 40px;
+  top: 8px;
+}
+
+.chat-cancel,
+.chat-clear {
+  position: absolute;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  fill: var(--vscode-foreground);
+  z-index: 1;
+}
+
+.chat-clear {
+  top: 10px;
+  right: 10px;
+}
+
+.chat-cancel {
+  top: 10px;
+  right: 40px;
+  display: none;
 }

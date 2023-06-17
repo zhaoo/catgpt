@@ -1,10 +1,10 @@
 {
-  "name": "catgpt",
-  "displayName": "CatGPT",
-  "description": "鼓励猫，让喵喵教你写代码吧~",
+  "name": "catgpt-copilot",
+  "displayName": "CatGPT Copilot",
+  "description": "ChatGPT编程辅助插件，让喵喵教你写代码吧！",
   "version": "1.0.0",
   "engines": {
-    "vscode": "^1.41.0"
+    "vscode": "^1.60.0"
   },
   "categories": [
     "Other"
@@ -20,29 +20,155 @@
   "license": "MIT",
   "main": "./dist/extension.js",
   "activationEvents": [
-    "onView:catgpt.chatWebview"
+    "*"
   ],
   "contributes": {
     "commands": [
       {
-        "command": "catgpt.codeOptimize",
-        "title": "CatGPT: 评分优化"
+        "command": "catgpt.edit-insert",
+        "title": "代码插入"
+      },
+      {
+        "command": "catgpt.code-explain",
+        "title": "代码解释"
+      },
+      {
+        "command": "catgpt.code-function-explain",
+        "title": "函数解释"
+      },
+      {
+        "command": "catgpt.code-function-refactor",
+        "title": "函数重构"
+      },
+      {
+        "command": "catgpt.code-score",
+        "title": "代码评分"
+      },
+      {
+        "command": "catgpt.code-find-problems",
+        "title": "代码查错"
+      },
+      {
+        "command": "catgpt.code-refactor",
+        "title": "代码重构"
+      },
+      {
+        "command": "catgpt.code-documentation",
+        "title": "编写文档"
+      },
+      {
+        "command": "catgpt.tool-inspire-programming",
+        "title": "启发式编程"
+      },
+      {
+        "command": "catgpt.tool-regex",
+        "title": "正则表达式"
+      },
+      {
+        "command": "catgpt.tool-sql",
+        "title": "SQL"
+      },
+      {
+        "command": "catgpt.tool-console",
+        "title": "控制台打印"
+      },
+      {
+        "command": "catgpt.tool-problems-solution",
+        "title": "解决编程相关问答"
+      },
+      {
+        "command": "catgpt.login",
+        "title": "CatGPT: 用户登录"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "catgpt.codeOptimize",
-          "when": "editorHasSelection",
-          "group": "catgpt-menu-group@1"
+          "group": "catgpt-menu-group@1",
+          "submenu": "code",
+          "when": "editorTextFocus"
+        },
+        {
+          "group": "catgpt-menu-group@2",
+          "submenu": "tool",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.login",
+          "group": "catgpt-menu-group@3",
+          "when": "editorTextFocus"
+        }
+      ],
+      "tool": [
+        {
+          "command": "catgpt.tool-inspire-programming",
+          "group": "catgpt-menu-group@1",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.tool-regex",
+          "group": "catgpt-menu-group@4",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.tool-sql",
+          "group": "catgpt-menu-group@5",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.tool-console",
+          "group": "catgpt-menu-group@3",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.tool-problems-solution",
+          "group": "catgpt-menu-group@2",
+          "when": "editorTextFocus"
+        }
+      ],
+      "code": [
+        {
+          "command": "catgpt.code-explain",
+          "group": "catgpt-menu-group@4",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.code-score",
+          "group": "catgpt-menu-group@6",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.code-find-problems",
+          "group": "catgpt-menu-group@5",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.code-refactor",
+          "group": "catgpt-menu-group@3",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "catgpt.code-documentation",
+          "group": "catgpt-menu-group@7",
+          "when": "editorTextFocus"
         }
       ]
     },
+    "submenus": [
+      {
+        "id": "code",
+        "label": "CatGPT: 编码服务"
+      },
+      {
+        "id": "tool",
+        "label": "CatGPT: 实用工具"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "catgpt",
-          "title": "catgpt",
+          "title": "chat",
           "icon": "media/images/cat.png"
         }
       ]
@@ -51,10 +177,48 @@
       "catgpt": [
         {
           "type": "webview",
-          "id": "catgpt.chatWebview",
+          "id": "catgpt.chat-webview",
           "name": "catgpt"
         }
       ]
+    },
+    "configuration": {
+      "title": "CatGPT",
+      "type": "object",
+      "properties": {
+        "catgpt.model": {
+          "type": "string",
+          "description": "模型",
+          "enum": [
+            "gpt-3.5-turbo",
+            "gpt-4"
+          ],
+          "order": 1,
+          "default": "gpt-3.5-turbo"
+        },
+        "catgpt.auth": {
+          "type": "string",
+          "description": "秘钥",
+          "order": 2,
+          "default": ""
+        },
+        "catgpt.proxy": {
+          "type": "string",
+          "description": "代理地址",
+          "order": 3,
+          "default": ""
+        },
+        "catgpt.aiNickname": {
+          "type": "string",
+          "description": "AI昵称",
+          "default": "CatGPT"
+        },
+        "catgpt.aiAvatar": {
+          "type": "string",
+          "description": "AI头像",
+          "default": "https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg"
+        }
+      }
     }
   },
   "scripts": {
