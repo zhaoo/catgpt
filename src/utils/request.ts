@@ -7,8 +7,8 @@ import * as vscode from 'vscode';
 
 const config = vscode.workspace.getConfiguration('catgpt'); //vscode配置
 const MODEL = config.get('model') || 'gpt-3.5-turbo'; //模型
-const AUTH: string = config.get('auth') || 'Bearer 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'; //秘钥
-const PROXY: string = config.get('proxy') || 'https://ai.xrender.fun/proxy/v1/chat/completions'; //代理
+const AUTH: string = config.get('auth') || ''; //秘钥
+const PROXY: string = config.get('proxy') || ''; //代理
 
 /** 普通请求 */
 export const request = async (params: any, cb?: (params: StreamRequestCbParams) => void) => {

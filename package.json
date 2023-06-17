@@ -134,7 +134,7 @@
         },
         {
           "command": "catgpt.code-score",
-          "group": "catgpt-menu-group@7",
+          "group": "catgpt-menu-group@6",
           "when": "editorTextFocus"
         },
         {
@@ -149,7 +149,7 @@
         },
         {
           "command": "catgpt.code-documentation",
-          "group": "catgpt-menu-group@6",
+          "group": "catgpt-menu-group@7",
           "when": "editorTextFocus"
         }
       ]
@@ -161,14 +161,14 @@
       },
       {
         "id": "tool",
-        "label": "CatGPT: 相关工具"
+        "label": "CatGPT: 实用工具"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
           "id": "catgpt",
-          "title": "catgpt",
+          "title": "chat",
           "icon": "media/images/cat.png"
         }
       ]
@@ -200,13 +200,13 @@
           "type": "string",
           "description": "秘钥",
           "order": 2,
-          "default": "Bearer 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"
+          "default": ""
         },
         "catgpt.proxy": {
           "type": "string",
           "description": "代理地址",
           "order": 3,
-          "default": "https://ai.xrender.fun/proxy/v1/chat/completions"
+          "default": ""
         },
         "catgpt.aiNickname": {
           "type": "string",

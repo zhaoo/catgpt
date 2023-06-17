@@ -94,7 +94,12 @@ const USER_USERINFO = {
   document.getElementById('chat-search').addEventListener('click', () => handleSearch()); //搜索按钮
   document.getElementById('chat-clear').addEventListener('click', () => handleClear()); //清空按钮
   document.getElementById('chat-cancel').addEventListener('click', () => handleCancle()); //停止按钮
-  document.getElementById('chat-input').addEventListener('keyup', e => e.key === 'Enter' && handleSearch()); //输入框回车
+  document.getElementById('chat-input').addEventListener('keypress', e => {
+    if (e.key === 'Enter') {
+      handleSearch();
+      return false;
+    }
+  }); //输入框回车
 
   /** 绑定消息 */
   window.addEventListener('message', event => {
