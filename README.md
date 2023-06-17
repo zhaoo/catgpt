@@ -1,4 +1,4 @@
-# :cat:CatGPT CatGPT Copilot - VSCode 编程辅助插件
+# :cat: CatGPT Copilot - VSCode 编程辅助插件
 
 CatGPT Copilot 是一款基于 ChatGPT 的 VSCode 编程辅助插件，支持聊天问答、代码自动补全、函数提示、悬浮释义等多种编程辅助服务，让喵喵教你写代码吧！
 ## 功能
