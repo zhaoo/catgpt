@@ -27,7 +27,7 @@ export const handleLogin = async (context: vscode.ExtensionContext) => {
     },
   });
 
-  const redirectUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://zhaoo.catgpt/`)); //登录页面
+  const redirectUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://zhaoo.catgpt-copilot/`)); //登录页面
 
   //打开页面
   await vscode.env.openExternal(
