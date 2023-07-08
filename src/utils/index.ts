@@ -1,5 +1,33 @@
 /** @format */
 
+import * as fs from 'fs';
+
+/** 判断是否文件夹 */
+export const isDirectory = (path: string) => {
+  try {
+    const stats = fs.statSync(path);
+    return stats.isDirectory();
+  } catch (error) {
+    return false;
+  }
+};
+
+/** 判断是否文件 */
+export const isFile = (path: string) => {
+  try {
+    const stats = fs.statSync(path);
+    return stats.isFile();
+  } catch (error) {
+    return false;
+  }
+};
+
+/** 从文件路径中截取文件名 */
+export const getFileName = (path: string): string => {
+  const parts = path.split('/');
+  return parts.pop() || '';
+};
+
 /** 生成随机ID */
 export const generateID = (length: number = 16) =>
   Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);

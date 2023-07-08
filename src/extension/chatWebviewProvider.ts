@@ -1,18 +1,16 @@
 /** @format */
 
 import * as vscode from 'vscode';
-import {CancelTokenSource} from 'axios';
 import {generateID} from '../utils/index';
-import {streamRequest} from '../utils/request';
+import {streamRequest} from '../utils/langchain';
 
 export class ChatWebviewProvider implements vscode.WebviewViewProvider {
   constructor(private readonly context: vscode.ExtensionContext) {}
   private static command: string = 'catgpt.chatWebview'; //事件ID
   private config = vscode.workspace.getConfiguration('catgpt'); //配置
   private view?: vscode.WebviewView; //视图
-  private cancelToken?: CancelTokenSource; //输出取消标识
+  private controller?: AbortController; //输出取消标识
   private processing: boolean = false; //处理中
-  private chatRecords: any[] = []; //对话记录
 
   /** 注册事件 */
   public static register(context: vscode.ExtensionContext): vscode.Disposable {
@@ -22,7 +20,7 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
   }
 
   /** 开始询问 */
-  public async search(prompt?: string, showPrompt = true) {
+  public async search(prompt: string, showPrompt = true) {
     if (this.processing) return vscode.window.showInformationMessage('处理中，不要着急哦...🍵');
     const user = this.context.globalState.get('user');
     const ai = {nickname: this.config.get('aiNickname'), avatar: this.config.get('aiAvatar')};
@@ -34,13 +32,9 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
       });
     const answerKey = generateID();
     this.processing = true;
-    this.chatRecords.push({role: 'user', content: prompt});
-    this.cancelToken = await streamRequest({messages: this.chatRecords}, ({content, done}) => {
+    this.controller = await streamRequest(prompt, ({content, done}) => {
       this.view?.webview.postMessage({type: 'answer', value: {content, key: answerKey, done, user, ai}});
-      if (done) {
-        this.chatRecords.push({role: 'assistant', content});
-        this.processing = false;
-      }
+      if (done) this.processing = false;
     });
   }
 
@@ -58,7 +52,7 @@ export class ChatWebviewProvider implements vscode.WebviewViewProvider {
         //取消输出
         case 'cancel': {
           this.processing = false;
-          this.cancelToken && this.cancelToken.cancel('流式输出取消');
+          this.controller && this.controller.abort();
           return;
         }
         case 'copy': //复制代码

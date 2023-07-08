@@ -25,8 +25,16 @@
   "contributes": {
     "commands": [
       {
-        "command": "catgpt.edit-insert",
-        "title": "代码插入"
+        "command": "catgpt.load-vector",
+        "title": "装载向量"
+      },
+      {
+        "command": "catgpt.edit-generate",
+        "title": "代码生成"
+      },
+      {
+        "command": "catgpt.edit-snippet",
+        "title": "代码片段"
       },
       {
         "command": "catgpt.code-explain",
@@ -50,7 +58,7 @@
       },
       {
         "command": "catgpt.code-refactor",
-        "title": "代码重构"
+        "title": "代码优化"
       },
       {
         "command": "catgpt.code-documentation",
@@ -186,27 +194,28 @@
       "title": "CatGPT",
       "type": "object",
       "properties": {
-        "catgpt.model": {
+        "catgpt.modelName": {
           "type": "string",
-          "description": "模型",
+          "description": "模型名称",
           "enum": [
+            "code-davinci-002",
             "gpt-3.5-turbo",
             "gpt-4"
           ],
           "order": 1,
           "default": "gpt-3.5-turbo"
         },
-        "catgpt.auth": {
+        "catgpt.apiKey": {
           "type": "string",
           "description": "秘钥",
           "order": 2,
           "default": ""
         },
-        "catgpt.proxy": {
+        "catgpt.basePath": {
           "type": "string",
           "description": "代理地址",
           "order": 3,
-          "default": ""
+          "default": "https://ai.xrender.fun/proxy/v1"
         },
         "catgpt.aiNickname": {
           "type": "string",
@@ -236,7 +245,7 @@
     "@types/glob": "^8.1.0",
     "@types/lodash": "^4.14.192",
     "@types/mocha": "^10.0.1",
-    "@types/node": "16.x",
+    "@types/node": "18.x",
     "@types/vscode": "^1.41.0",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
@@ -250,8 +259,12 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "axios": "^1.3.5",
+    "cheerio": "^1.0.0-rc.12",
+    "hnswlib-node": "^1.4.2",
+    "langchain": "^0.0.91",
     "lodash": "^4.17.21",
-    "nanoid": "^4.0.2"
+    "nanoid": "^4.0.2",
+    "node-fetch": "^3.3.1",
+    "pdf-parse": "^1.1.1"
   }
 }
