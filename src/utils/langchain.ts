@@ -2,6 +2,7 @@
 
 import * as vscode from 'vscode';
 import {ChatOpenAI} from 'langchain/chat_models/openai';
+import {ChatGlm6BLLM} from './chat-models/chatglm-6b';
 import {OpenAIEmbeddings} from 'langchain/embeddings/openai';
 import {RetrievalQAChain} from 'langchain/chains';
 import {MemoryVectorStore} from 'langchain/vectorstores/memory';
@@ -21,10 +22,16 @@ const API_KEY: string = config.get('apiKey') || ''; //秘钥
 const BASE_PATH: string = config.get('basePath') || ''; //代理
 
 //模型
-const model = new ChatOpenAI(
-  {openAIApiKey: API_KEY, modelName: MODEL_NAME, temperature: 0, streaming: true},
-  {basePath: BASE_PATH},
-);
+let model;
+if (MODEL_NAME === 'ChatGLM-6B') {
+  model = new ChatGlm6BLLM({temperature: 0});
+} else {
+  model = new ChatOpenAI(
+    {openAIApiKey: API_KEY, modelName: MODEL_NAME, temperature: 0, streaming: true},
+    {basePath: BASE_PATH},
+  );
+}
+
 //向量库
 const vectorStore: MemoryVectorStore = new MemoryVectorStore(
   new OpenAIEmbeddings({openAIApiKey: API_KEY}, {basePath: BASE_PATH}),
@@ -46,7 +53,11 @@ export const streamRequest = async (input: string, cb: (params: StreamRequestCbP
         },
       },
     ])
-    .then((result: any) => cb({content: result.text, section: '', done: true}));
+    .then((result: any) => cb({content: result.text, section: '', done: true}))
+    .catch(e => {
+      console.error(e);
+      cb({content: '异常: ' + e, section: '异常: ' + e, done: true});
+    });
 
   return controller;
 };
@@ -71,7 +82,7 @@ export const loadFileVector = async (filePath: string) => {
 
   //文件
   if (isFile(filePath)) {
-    const suffix = '.' + (filePath.match(/\.([^.]+)$/) || [])[1]; //文件扩展名
+    const suffix = '.' + (filePath.match(/\.([^.]+)$/) || [])[1];
     if (suffix === '.json') {
       fileDocs = await new JSONLoader(filePath, '/texts').load();
     } else if (suffix === '.pdf') {
@@ -82,23 +93,23 @@ export const loadFileVector = async (filePath: string) => {
   }
 
   if (!fileDocs) throw new Error('文件格式不支持');
-  const textSplitter = new RecursiveCharacterTextSplitter({chunkSize: 1000, chunkOverlap: 200}); //文档转切片
-  const docs = await textSplitter.splitDocuments(fileDocs); //获取切片
-  vectorStore.addDocuments(docs); //存储内存向量
+  const textSplitter = new RecursiveCharacterTextSplitter({chunkSize: 1024, chunkOverlap: 0});
+  const docs = await textSplitter.splitDocuments(fileDocs);
+  vectorStore.addDocuments(docs);
 };
 
 /** 加载网页向量 */
 export const loadWebVector = async (url: string) => {
   const loader = new CheerioWebBaseLoader(url);
   const webDocs = await loader.load();
-  const textSplitter = new RecursiveCharacterTextSplitter({chunkSize: 1000, chunkOverlap: 200}); //文档转切片
-  const docs = await textSplitter.splitDocuments(webDocs); //获取切片
-  vectorStore.addDocuments(docs); //存储内存向量
+  const textSplitter = new RecursiveCharacterTextSplitter({chunkSize: 1024, chunkOverlap: 0});
+  const docs = await textSplitter.splitDocuments(webDocs);
+  vectorStore.addDocuments(docs);
 };
 
 /** 加载文本向量 */
 export const loadTextVector = async (text: string) => {
-  const textSplitter = new RecursiveCharacterTextSplitter({chunkSize: 1000, chunkOverlap: 200});
+  const textSplitter = new RecursiveCharacterTextSplitter({chunkSize: 1024, chunkOverlap: 0});
   const docs = await textSplitter.createDocuments([text]);
-  vectorStore.addDocuments(docs); //存储内存向量
+  vectorStore.addDocuments(docs);
 };

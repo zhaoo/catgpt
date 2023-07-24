@@ -2,7 +2,7 @@
   "name": "catgpt-copilot",
   "displayName": "CatGPT Copilot",
   "description": "ChatGPT编程辅助插件，让喵喵教你写代码吧！",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -198,9 +198,9 @@
           "type": "string",
           "description": "模型名称",
           "enum": [
-            "code-davinci-002",
             "gpt-3.5-turbo",
-            "gpt-4"
+            "gpt-4",
+            "ChatGLM-6B"
           ],
           "order": 1,
           "default": "gpt-3.5-turbo"
@@ -225,7 +225,7 @@
         "catgpt.aiAvatar": {
           "type": "string",
           "description": "AI头像",
-          "default": "https://gw.alicdn.com/imgextra/i2/O1CN01QyCxlE1RF92i5wswn_!!6000000002081-0-tps-168-168.jpg"
+          "default": "https://gw.alicdn.com/imgextra/i1/O1CN01Kcr5fj24kXE9Q4mtS_!!6000000007429-2-tps-1024-1024.png"
         }
       }
     }
