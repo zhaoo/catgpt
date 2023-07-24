@@ -5,13 +5,22 @@ import {ChatWebviewProvider} from './chatWebviewProvider';
 import {provideHover} from './hoverProvider';
 import {CompletionItemProvider} from './completionItemProvider';
 import {CodeLensProvider} from './codeLensProvider';
-import {handleLogin, handleEditInsert, handleTriggerChat} from './commandHandler';
+import {handleLogin, handleEditInsert, handleTriggerChat, handleLoadVector} from './commandHandler';
 
 export function activate(context: vscode.ExtensionContext) {
   const chatViewProvider = new ChatWebviewProvider(context); //webview实例
 
+  const catStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 0);
+  catStatusBar.command = 'catgpt.load-vector';
+  catStatusBar.text = `$(files) CatGPT`;
+  catStatusBar.show();
+
   /** 事件列表 */
   const SUBSCRIPTIONS = [
+    {
+      type: 'StatusBarItem',
+      statusBarItem: catStatusBar,
+    },
     {
       type: 'CodeLensProvider',
       selector: {scheme: 'file'},
@@ -33,6 +42,11 @@ export function activate(context: vscode.ExtensionContext) {
       selector: {scheme: 'file'},
       provider: new CompletionItemProvider(),
       paramtriggerCharacters: ' ',
+    },
+    {
+      type: 'Command',
+      commandId: 'catgpt.load-vector',
+      commandHandler: (content: string) => handleLoadVector(),
     },
     {
       type: 'Command',
@@ -117,8 +131,24 @@ export function activate(context: vscode.ExtensionContext) {
     },
     {
       type: 'TextEditorCommand',
-      commandId: 'catgpt.edit-insert',
-      commandHandler: (editor: vscode.TextEditor) => handleEditInsert(editor, 'stream'),
+      commandId: 'catgpt.edit-generate',
+      commandHandler: (editor: vscode.TextEditor) => {
+        const language = editor.document.languageId; //当前语言
+        const position = editor.selection.active; //插入位置
+        const lineText = editor.document.lineAt(position.line).text; //选中文本
+        const prompt = `帮我生成一段 ${language} 代码，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
+        handleEditInsert(editor, prompt, 'stream');
+      },
+    },
+    {
+      type: 'TextEditorCommand',
+      commandId: 'catgpt.edit-snippet',
+      commandHandler: (editor: vscode.TextEditor) => {
+        const position = editor.selection.active; //插入位置
+        const lineText = editor.document.lineAt(position.line).text; //选中文本
+        const prompt = `帮我生成代码片段，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
+        handleEditInsert(editor, prompt, 'stream');
+      },
     },
   ];
 
@@ -141,6 +171,8 @@ export function activate(context: vscode.ExtensionContext) {
         );
       case 'CodeLensProvider': //代码提示
         return context.subscriptions.push(vscode.languages.registerCodeLensProvider(sub.selector, sub.provider));
+      case 'StatusBarItem': //状态栏
+        return context.subscriptions.push(sub.statusBarItem);
     }
   });
 }

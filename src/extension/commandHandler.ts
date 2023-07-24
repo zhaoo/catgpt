@@ -2,7 +2,8 @@
 
 import * as vscode from 'vscode';
 import {generatePrompt} from '../utils';
-import {request, streamRequest} from '../utils/request';
+import {streamRequest, loadFileVector, loadWebVector, loadTextVector} from '../utils/langchain';
+import {request} from '../utils/request';
 
 /** 登录BUC */
 export const handleLogin = async (context: vscode.ExtensionContext) => {
@@ -27,7 +28,9 @@ export const handleLogin = async (context: vscode.ExtensionContext) => {
     },
   });
 
-  const redirectUri = await vscode.env.asExternalUri(vscode.Uri.parse(`${vscode.env.uriScheme}://zhaoo.catgpt/`)); //登录页面
+  const redirectUri = await vscode.env.asExternalUri(
+    vscode.Uri.parse(`${vscode.env.uriScheme}://zhaoo.catgpt-copilot/`),
+  ); //登录页面
 
   //打开页面
   await vscode.env.openExternal(
@@ -52,19 +55,16 @@ export const handleTriggerChat = (key: string, type: string, chatViewProvider: a
 };
 
 /** 插入编辑器 */
-export const handleEditInsert = async (editor: vscode.TextEditor, insertType: 'stream' | 'normal') => {
-  const language = editor.document.languageId; //当前语言
+export const handleEditInsert = async (editor: vscode.TextEditor, prompt: string, insertType: 'stream' | 'normal') => {
   const position = editor.selection.active; //插入位置
-  const lineText = editor.document.lineAt(position.line).text; //选中文本
   vscode.commands.executeCommand('editor.action.insertLineAfter'); //光标锚到下一行
-  const prompt = `帮我生成一段 ${language} 代码，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
 
   //流式插入
   const streamInsert = (token: vscode.CancellationToken) => {
     return new Promise(resolve => {
       let line = 1,
         textTemp = '';
-      streamRequest({messages: [{role: 'user', content: prompt}]}, ({section, done}) => {
+      streamRequest(prompt, ({section, done}) => {
         if (token.isCancellationRequested) return resolve(false);
         if (section.indexOf('\n') !== -1) {
           const matchs: any = section.match(/(.*)\n(.*)/);
@@ -99,4 +99,69 @@ export const handleEditInsert = async (editor: vscode.TextEditor, insertType: 's
       }
     },
   );
+};
+
+/** 向量加载下拉选择 */
+export const handleLoadVector = () => {
+  vscode.window.showQuickPick(['本地文件', '文本输入', '网页文档', '组件库 / 代码片段']).then(selectedOption => {
+    switch (selectedOption) {
+      case '本地文件':
+        return handleFileVector();
+      case '文本输入':
+        return handleTextVector();
+      case '网页文档':
+        return handleWebVector();
+    }
+  });
+};
+
+/** 加载文件向量 */
+export const handleFileVector = async () => {
+  const fileUri = await vscode.window.showOpenDialog({
+    canSelectFiles: true,
+    canSelectFolders: true,
+    canSelectMany: false,
+    title: '选择需要嵌入的文件或目录',
+  });
+  if (fileUri && fileUri[0]) {
+    const selectedPath = fileUri[0].fsPath;
+    try {
+      await loadFileVector(selectedPath);
+      vscode.window.showInformationMessage('文件向量转储成功，已载入上下文！');
+    } catch (e) {
+      vscode.window.showErrorMessage(`文件向量转储失败\n${e}`);
+    }
+  }
+};
+
+/** 加载页面向量 */
+export const handleWebVector = async () => {
+  const url = await vscode.window.showInputBox({
+    prompt: '网页链接',
+    placeHolder: '请输入网页链接，自动爬取页面内容',
+  });
+  if (url) {
+    try {
+      await loadWebVector(url);
+      vscode.window.showInformationMessage('页面向量转储成功，已载入上下文！');
+    } catch (e) {
+      vscode.window.showErrorMessage(`页面向量转储失败\n${e}`);
+    }
+  }
+};
+
+/** 加载文本向量 */
+export const handleTextVector = async () => {
+  const text = await vscode.window.showInputBox({
+    prompt: '文本',
+    placeHolder: '请输入需要载入上下文的文本片段',
+  });
+  if (text) {
+    try {
+      await loadTextVector(text);
+      vscode.window.showInformationMessage('文本向量转储成功，已载入上下文！');
+    } catch (e) {
+      vscode.window.showErrorMessage(`文本向量转储失败\n${e}`);
+    }
+  }
 };

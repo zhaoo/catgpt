@@ -13,9 +13,16 @@ export class CompletionItemProvider implements vscode.CompletionItemProvider {
         {
           label: '代码生成',
           kind: vscode.CompletionItemKind.Function,
-          detail: 'CatGPT: 代码生成',
+          detail: 'CatGPT: 基于描述的需求生成代码',
           insertText: '',
-          command: {command: 'catgpt.edit-insert', title: '代码插入'},
+          command: {command: 'catgpt.edit-generate', title: '代码生成'},
+        },
+        {
+          label: '代码片段',
+          kind: vscode.CompletionItemKind.Function,
+          detail: 'CatGPT: 基于载入的上下文或网络，输出预置代码片段',
+          insertText: '',
+          command: {command: 'catgpt.edit-snippet', title: '代码片段'},
         },
       ];
     }

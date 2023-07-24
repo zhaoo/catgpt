@@ -1,23 +1,24 @@
 /** @format */
 
-import {StreamRequestCbParams} from '../@types/utils';
 import axios from 'axios';
 import {get} from 'lodash';
 import * as vscode from 'vscode';
+import {StreamRequestCbParams} from '../@types/utils';
+import './fetch-polyfill';
 
 const config = vscode.workspace.getConfiguration('catgpt'); //vscode配置
-const MODEL = config.get('model') || 'gpt-3.5-turbo'; //模型
-const AUTH: string = config.get('auth') || ''; //秘钥
-const PROXY: string = config.get('proxy') || ''; //代理
+const MODEL_NAME: string = config.get('modelName') || 'gpt-3.5-turbo'; //模型
+const API_KEY: string = config.get('apiKey') || ''; //秘钥
+const BASE_PATH: string = config.get('basePath') || ''; //代理
 
 /** 普通请求 */
 export const request = async (params: any, cb?: (params: StreamRequestCbParams) => void) => {
   try {
     const response = await axios({
-      url: PROXY,
+      url: BASE_PATH + '/chat/completions',
       method: 'post',
       data: JSON.stringify({
-        model: MODEL,
+        model: MODEL_NAME,
         frequency_penalty: 0,
         presence_penalty: 0,
         max_tokens: 2048,
@@ -28,7 +29,7 @@ export const request = async (params: any, cb?: (params: StreamRequestCbParams) 
       }),
       headers: {
         'content-type': 'application/json',
-        authorization: AUTH,
+        authorization: 'Bearer ' + API_KEY,
       },
     });
     const content = get(response, 'data.choices[0].message.content');
@@ -44,10 +45,10 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
   const cancelToken = axios.CancelToken.source(); //中断标识
   try {
     const response = await axios({
-      url: 'https://ai.xrender.fun/proxy/v1/chat/completions',
+      url: BASE_PATH + '/chat/completions',
       method: 'post',
       data: JSON.stringify({
-        model: MODEL,
+        model: MODEL_NAME,
         frequency_penalty: 0,
         presence_penalty: 0,
         max_tokens: 2048,
@@ -58,7 +59,7 @@ export const streamRequest = async (params: any, cb: (params: StreamRequestCbPar
       }),
       headers: {
         'content-type': 'application/json',
-        authorization: AUTH,
+        authorization: 'Bearer ' + API_KEY,
       },
       cancelToken: cancelToken.token,
       responseType: 'stream',
