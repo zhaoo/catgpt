@@ -1,6 +1,6 @@
 /** 
  * node-fetch polyfill
- * 注：langchian 仅支持 Node v18+，vscode 插件环境为打包好的 Node v16，需加载此垫片，并按此文档替换 langchain 依赖中的流式解析逻辑
+ * 注：langchian 仅支持 Node.js 18+，vscode 插件环境为打包好的 Node.js 16，需加载此垫片，并按此文档替换 langchain 依赖中的流式解析逻辑
  * https://github.com/hwchase17/langchainjs/issues/548#issuecomment-1607846463
  */
 

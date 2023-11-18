@@ -1,45 +1,55 @@
 # :cat: CatGPT Copilot - VSCode 编程辅助插件
 
-CatGPT Copilot 是一款基于 ChatGPT 的 VSCode 编程辅助插件，支持聊天问答、代码自动补全、函数提示、悬浮释义、上下文导入等多种编程辅助服务，让喵喵教你写代码吧！
-## 功能
+一款基于 ChatGPT 的 VSCode 编程辅助插件，支持代码生成、对话问答、函数补全等编程辅助服务，且支持切换模型和导入本地知识库
 
-- ChatGPT，支持普通请求和流式请求两种服务模式
-- 聊天问答，聊天框形式问答服务，支持代码格式化和复制/插入
-- 代码补全，AI补全代码编写需求，自动识别当前语言类型
-- 悬浮释义，划词划句解释代码含义
-- 菜单服务，提供其他编码辅助功能
-- 上下文载入，导入自定义内容，提供更精准服务
+## 功能演示
 
-## 安装
+代码生成：描述需求，一键生成代码片段并流式插入编辑器
 
-1. 在 VSCode 插件市场中搜索 CatGPT Copilot
-2. 在 release 中下载最新的插件文件（catgpt.vsix），在 VSCode 插件右上角点击【从 VSIX 安装】，选择插件文件完成安装
+<video src="https://pic.izhaoo.com/740ba7d4-c706-49ff-8fc2-9600c3194b08.mov" controls="controls" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></video>
 
-## 使用
+对话问答：聊天框对话问答，输出的代码支持一键插入编辑器，从面向 Google 编程到面向 AI 编程
 
-### 聊天问答
+<video src="https://pic.izhaoo.com/15b6ee68-9ce9-433b-85fc-250988e6d7ce.mov" controls="controls" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></video>
 
-1. 点击侧边栏【猫爪】图标，唤起聊天窗，输出提问内容并点击发送，稍等片刻即可收到回答；
-2. 点击聊天框右上角【垃圾桶】按钮可一键清空聊天记录；流式输出过程中可点击右上角【停止】按钮停止输出；
-3. 代码内容以高亮代码块形式输出，支持复制剪切板和插入编辑器；
+函数提示：自动识别函数并在上方悬浮“解释”和“优化”按钮，点击执行对应操作并在对话框展示结果
 
-### 代码补全
+<video src="https://pic.izhaoo.com/5fbfdb30-91c0-444b-b252-c208b5e5e9b7.mov" controls="controls" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></video>
 
-1. 在编辑器注释中输入编码需求，例如：//正则表达式匹配手机号码；
-2. 输入需求后，按【空格键】激活匹配，选择【代码生成】并确认，稍等片刻即可自动补全代码；
-3. 代码补全过程中可随时点击右下角【取消】按钮取消输出；
+划词释义：划词选中代码片段，在上方悬浮框中解释代码含义
 
-### 函数提示
+![划词释义](https://pic.izhaoo.com/d8fc0d1c-637b-44af-8b1a-3c91a85d7590.png)
 
-1. 所有函数上方会新增【解释】和【优化】按钮，点击即可在对话框输出解释或优化结果，目前支持 JavaScript 普通函数和箭头函数；
+其他指令：右键菜单可以唤起更多代码辅助指令，本质上就是预置了一些 Prompt 和交互优化
 
-### 菜单辅助
+![其他指令](https://pic.izhaoo.com/106fb5af-ac0a-4f3f-84bc-e1e0c2daa596.jpeg)
 
-1. 其他常用的辅助功能全部收录在右键菜单中，在编辑器选中目标代码片段，点击右键选择响应的 CatGPT 服务，即可生成AI辅助结果；
+![其他指令](https://pic.izhaoo.com/8ec86c22-b6f8-427c-94fc-312ee2cfa94d.jpeg)
 
-## 贡献
+知识库：支持导入本地/在线知识库，提供更精准的辅助，目前支持类型有：文本输入、本地文件、在线网页
 
-如果你有任何问题或者建议，欢迎提出 issue 或者 pr。
+<video src="https://pic.izhaoo.com/81bc1773-f41d-4372-818e-5cd72e703ba4.mov" controls="controls" style="max-width: 100%; display: block; margin-left: auto; margin-right: auto;"></video>
+
+多模型：支持多模型切换，目前支持：ChatGPT-3.5/4、CodeGeeX2-6B、ChatGLM2-6B
+
+![多模型](https://pic.izhaoo.com/07f3e630-2b7c-42b7-99ef-881d2316aaab.jpeg)
+
+
+## 安装使用
+
+![插件市场](https://gw.alicdn.com/imgextra/i3/O1CN01BcHAWT1IdZfZZY0xu_!!6000000000916-0-tps-948-352.jpg)
+
+VSCode 插件市场搜索 “CatGPT Copilot” 安装插件，并在设置页配置“秘钥”和“代理地址”，重启编辑器使用。
+
+（秘钥就不提供了哈，逃...）
+
+![配置插件](https://gw.alicdn.com/imgextra/i4/O1CN01E9UQJX25Adp5sUPsO_!!6000000007486-0-tps-2314-1978.jpg)
+
+## 欢迎贡献
+
+如果你有任何问题或者建议，欢迎提出 issue 或者 pr
+
+![别催快了](https://gw.alicdn.com/imgextra/i1/O1CN01VlFBpL29zG3h9mVu9_!!6000000008138-0-tps-238-236.jpg)
 
 ## 许可证
 

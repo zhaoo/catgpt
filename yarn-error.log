@@ -1,0 +1,295 @@
+Arguments: 
+  /Users/zhaoo/.nvm/versions/node/v16.18.1/bin/node /Users/zhaoo/.nvm/versions/node/v16.18.1/bin/yarn install
+
+PATH: 
+  /Users/zhaoo/.nvm/versions/node/v16.18.1/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/zhaoo/.nvm/versions/node/v16.18.1/bin:/Users/zhaoo/.cargo/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.18.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: EINVAL: invalid argument, unlink '/Users/zhaoo/Desktop/code/catgpt/node_modules/mocha/node_modules/minimatch'
+
+npm manifest: 
+  {
+    "name": "catgpt-copilot",
+    "displayName": "CatGPT Copilot",
+    "description": "ChatGPT编程辅助插件，让喵喵教你写代码吧！",
+    "version": "1.0.2",
+    "engines": {
+      "vscode": "^1.60.0"
+    },
+    "categories": [
+      "Other"
+    ],
+    "publisher": "zhaoo",
+    "icon": "media/images/logo.png",
+    "keywords": [
+      "chatgpt",
+      "openai",
+      "cat",
+      "ai"
+    ],
+    "license": "MIT",
+    "main": "./dist/extension.js",
+    "activationEvents": [
+      "*"
+    ],
+    "contributes": {
+      "commands": [
+        {
+          "command": "catgpt.load-vector",
+          "title": "装载向量"
+        },
+        {
+          "command": "catgpt.edit-generate",
+          "title": "代码生成"
+        },
+        {
+          "command": "catgpt.edit-snippet",
+          "title": "代码片段"
+        },
+        {
+          "command": "catgpt.code-explain",
+          "title": "代码解释"
+        },
+        {
+          "command": "catgpt.code-function-explain",
+          "title": "函数解释"
+        },
+        {
+          "command": "catgpt.code-function-refactor",
+          "title": "函数重构"
+        },
+        {
+          "command": "catgpt.code-score",
+          "title": "代码评分"
+        },
+        {
+          "command": "catgpt.code-find-problems",
+          "title": "代码查错"
+        },
+        {
+          "command": "catgpt.code-refactor",
+          "title": "代码优化"
+        },
+        {
+          "command": "catgpt.code-documentation",
+          "title": "编写文档"
+        },
+        {
+          "command": "catgpt.tool-inspire-programming",
+          "title": "启发式编程"
+        },
+        {
+          "command": "catgpt.tool-regex",
+          "title": "正则表达式"
+        },
+        {
+          "command": "catgpt.tool-sql",
+          "title": "SQL"
+        },
+        {
+          "command": "catgpt.tool-console",
+          "title": "控制台打印"
+        },
+        {
+          "command": "catgpt.tool-problems-solution",
+          "title": "解决编程相关问答"
+        },
+        {
+          "command": "catgpt.login",
+          "title": "CatGPT: 用户登录"
+        }
+      ],
+      "menus": {
+        "editor/context": [
+          {
+            "group": "catgpt-menu-group@1",
+            "submenu": "code",
+            "when": "editorTextFocus"
+          },
+          {
+            "group": "catgpt-menu-group@2",
+            "submenu": "tool",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.login",
+            "group": "catgpt-menu-group@3",
+            "when": "editorTextFocus"
+          }
+        ],
+        "tool": [
+          {
+            "command": "catgpt.tool-inspire-programming",
+            "group": "catgpt-menu-group@1",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.tool-regex",
+            "group": "catgpt-menu-group@4",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.tool-sql",
+            "group": "catgpt-menu-group@5",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.tool-console",
+            "group": "catgpt-menu-group@3",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.tool-problems-solution",
+            "group": "catgpt-menu-group@2",
+            "when": "editorTextFocus"
+          }
+        ],
+        "code": [
+          {
+            "command": "catgpt.code-explain",
+            "group": "catgpt-menu-group@4",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.code-score",
+            "group": "catgpt-menu-group@6",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.code-find-problems",
+            "group": "catgpt-menu-group@5",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.code-refactor",
+            "group": "catgpt-menu-group@3",
+            "when": "editorTextFocus"
+          },
+          {
+            "command": "catgpt.code-documentation",
+            "group": "catgpt-menu-group@7",
+            "when": "editorTextFocus"
+          }
+        ]
+      },
+      "submenus": [
+        {
+          "id": "code",
+          "label": "CatGPT: 编码服务"
+        },
+        {
+          "id": "tool",
+          "label": "CatGPT: 实用工具"
+        }
+      ],
+      "viewsContainers": {
+        "activitybar": [
+          {
+            "id": "catgpt",
+            "title": "chat",
+            "icon": "media/images/cat.png"
+          }
+        ]
+      },
+      "views": {
+        "catgpt": [
+          {
+            "type": "webview",
+            "id": "catgpt.chat-webview",
+            "name": "catgpt"
+          }
+        ]
+      },
+      "configuration": {
+        "title": "CatGPT",
+        "type": "object",
+        "properties": {
+          "catgpt.modelName": {
+            "type": "string",
+            "description": "模型名称",
+            "enum": [
+              "gpt-3.5-turbo",
+              "gpt-4",
+              "ChatGLM-6B"
+            ],
+            "order": 1,
+            "default": "gpt-3.5-turbo"
+          },
+          "catgpt.apiKey": {
+            "type": "string",
+            "description": "秘钥",
+            "order": 2,
+            "default": ""
+          },
+          "catgpt.basePath": {
+            "type": "string",
+            "description": "代理地址",
+            "order": 3,
+            "default": "https://ai.xrender.fun/proxy/v1"
+          },
+          "catgpt.aiNickname": {
+            "type": "string",
+            "description": "AI昵称",
+            "default": "CatGPT"
+          },
+          "catgpt.aiAvatar": {
+            "type": "string",
+            "description": "AI头像",
+            "default": "https://gw.alicdn.com/imgextra/i1/O1CN01Kcr5fj24kXE9Q4mtS_!!6000000007429-2-tps-1024-1024.png"
+          }
+        }
+      }
+    },
+    "scripts": {
+      "vscode:prepublish": "yarn run package",
+      "compile": "webpack",
+      "watch": "webpack --watch",
+      "package": "webpack --mode production --devtool hidden-source-map",
+      "compile-tests": "tsc -p . --outDir out",
+      "watch-tests": "tsc -p . -w --outDir out",
+      "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+      "lint": "eslint src --ext ts",
+      "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+      "@types/glob": "^8.1.0",
+      "@types/lodash": "^4.14.192",
+      "@types/mocha": "^10.0.1",
+      "@types/node": "18.x",
+      "@types/vscode": "^1.41.0",
+      "@typescript-eslint/eslint-plugin": "^5.56.0",
+      "@typescript-eslint/parser": "^5.56.0",
+      "@vscode/test-electron": "^2.3.0",
+      "eslint": "^8.36.0",
+      "glob": "^8.1.0",
+      "mocha": "^10.2.0",
+      "ts-loader": "^9.4.2",
+      "typescript": "^4.9.5",
+      "webpack": "^5.76.3",
+      "webpack-cli": "^5.0.1"
+    },
+    "dependencies": {
+      "cheerio": "^1.0.0-rc.12",
+      "hnswlib-node": "^1.4.2",
+      "langchain": "^0.0.91",
+      "lodash": "^4.17.21",
+      "nanoid": "^4.0.2",
+      "node-fetch": "^3.3.1",
+      "pdf-parse": "^1.1.1"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

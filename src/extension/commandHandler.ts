@@ -59,24 +59,26 @@ export const handleEditInsert = async (editor: vscode.TextEditor, prompt: string
   const position = editor.selection.active; //插入位置
   vscode.commands.executeCommand('editor.action.insertLineAfter'); //光标锚到下一行
 
-  //流式插入
+  /** 流式写入编辑器 */
   const streamInsert = (token: vscode.CancellationToken) => {
     return new Promise(resolve => {
       let line = 1,
-        textTemp = '';
+        lineTextTemp = ''; //当前行号，当前行缓存文本
       streamRequest(prompt, ({section, done}) => {
-        if (token.isCancellationRequested) return resolve(false);
+        if (token.isCancellationRequested) return resolve(false); //取消写入
         if (section.indexOf('\n') !== -1) {
+          //遇到换行符写入编辑器并另起一行
           const matchs: any = section.match(/(.*)\n(.*)/);
-          textTemp += matchs[1];
-          editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), textTemp + '\n'));
+          lineTextTemp += matchs[1];
+          editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), lineTextTemp + '\n'));
           line++;
-          textTemp = matchs[2];
+          lineTextTemp = matchs[2];
         } else {
-          textTemp += section;
+          lineTextTemp += section;
         }
+        //输出结束
         if (done) {
-          editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), textTemp + '\n'));
+          editor.edit(editBuilder => editBuilder.insert(position.translate(line, 0), lineTextTemp + '\n'));
           return resolve(true);
         }
       });
@@ -101,8 +103,34 @@ export const handleEditInsert = async (editor: vscode.TextEditor, prompt: string
   );
 };
 
-/** 向量加载下拉选择 */
-export const handleLoadVector = () => {
+/** 加载状态栏 */
+export const handleStatusBarLoader = async () => {
+  vscode.window.showQuickPick(['代码生成', '加载上下文']).then(selectedOption => {
+    switch (selectedOption) {
+      case '代码生成':
+        return handleCodeGenerate();
+      case '加载上下文':
+        return handleVectorLoader();
+    }
+  });
+};
+
+/** 代码生成 */
+export const handleCodeGenerate = async () => {
+  const demand = await vscode.window.showInputBox({
+    prompt: '代码生成',
+    placeHolder: '请输入您的需求...',
+  });
+  const editor = vscode.window.activeTextEditor;
+  if (!editor) return;
+  const language = editor.document.languageId;
+  if (!demand) return;
+  const prompt = `帮我生成一段 ${language} 代码，需求如下：${demand}。我希望你只回复代码，而不是其他任何内容，不要写解释，返回纯文本不要代码块。`;
+  handleEditInsert(editor, prompt, 'stream');
+};
+
+/** 加载向量载入 */
+export const handleVectorLoader = () => {
   vscode.window.showQuickPick(['本地文件', '文本输入', '网页文档', '组件库 / 代码片段']).then(selectedOption => {
     switch (selectedOption) {
       case '本地文件':

@@ -1,8 +1,8 @@
 {
   "name": "catgpt-copilot",
   "displayName": "CatGPT Copilot",
-  "description": "ChatGPT编程辅助插件，让喵喵教你写代码吧！",
-  "version": "1.0.2",
+  "description": "AI编程辅助插件，让哈基米教你写代码吧！",
+  "version": "1.0.3",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -200,7 +200,8 @@
           "enum": [
             "gpt-3.5-turbo",
             "gpt-4",
-            "ChatGLM-6B"
+            "CodeGeeX2-6B",
+            "ChatGLM2-6B"
           ],
           "order": 1,
           "default": "gpt-3.5-turbo"
