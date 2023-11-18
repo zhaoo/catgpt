@@ -5,13 +5,13 @@ import {ChatWebviewProvider} from './chatWebviewProvider';
 import {provideHover} from './hoverProvider';
 import {CompletionItemProvider} from './completionItemProvider';
 import {CodeLensProvider} from './codeLensProvider';
-import {handleLogin, handleEditInsert, handleTriggerChat, handleLoadVector} from './commandHandler';
+import {handleLogin, handleEditInsert, handleTriggerChat, handleStatusBarLoader} from './commandHandler';
 
 export function activate(context: vscode.ExtensionContext) {
   const chatViewProvider = new ChatWebviewProvider(context); //webview实例
 
   const catStatusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 0);
-  catStatusBar.command = 'catgpt.load-vector';
+  catStatusBar.command = 'catgpt.status-bar-loader';
   catStatusBar.text = `$(files) CatGPT`;
   catStatusBar.show();
 
@@ -45,8 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
     },
     {
       type: 'Command',
-      commandId: 'catgpt.load-vector',
-      commandHandler: (content: string) => handleLoadVector(),
+      commandId: 'catgpt.status-bar-loader',
+      commandHandler: () => handleStatusBarLoader(),
     },
     {
       type: 'Command',
@@ -136,7 +136,8 @@ export function activate(context: vscode.ExtensionContext) {
         const language = editor.document.languageId; //当前语言
         const position = editor.selection.active; //插入位置
         const lineText = editor.document.lineAt(position.line).text; //选中文本
-        const prompt = `帮我生成一段 ${language} 代码，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
+        const prompt = `帮我生成一段 ${language} 代码，需求如下：${lineText}。我希望你只回复代码，而不是其他任何内容，不要写解释，返回纯文本不要代码块。`;
+        console.log(prompt)
         handleEditInsert(editor, prompt, 'stream');
       },
     },
@@ -146,7 +147,7 @@ export function activate(context: vscode.ExtensionContext) {
       commandHandler: (editor: vscode.TextEditor) => {
         const position = editor.selection.active; //插入位置
         const lineText = editor.document.lineAt(position.line).text; //选中文本
-        const prompt = `帮我生成代码片段，要求如下：${lineText}，只需要输出纯代码而不需要其他任何文本`;
+        const prompt = `帮我生成代码片段，需求如下：${lineText}。我希望你只回复代码，而不是其他任何内容，不要写解释，返回纯文本不要代码块。`;
         handleEditInsert(editor, prompt, 'stream');
       },
     },

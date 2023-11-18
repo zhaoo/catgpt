@@ -23,17 +23,10 @@ export const isFile = (path: string) => {
 };
 
 /** 从文件路径中截取文件名 */
-export const getFileName = (path: string): string => {
+export const getFileName = (path: string) => {
   const parts = path.split('/');
   return parts.pop() || '';
 };
-
-/** 生成随机ID */
-export const generateID = (length: number = 16) =>
-  Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
-
-/** 是否包含换行符 */
-export const hasNewline = (str: string) => str.indexOf('\n') !== -1;
 
 /** 睡眠 */
 export const sleep = (time: number) =>
@@ -42,6 +35,13 @@ export const sleep = (time: number) =>
       resolve(true);
     }, time);
   });
+
+/** 生成随机ID */
+export const generateID = (length: number = 16) =>
+  Number(Math.random().toString().substr(3, length) + Date.now()).toString(36);
+
+/** 是否包含换行符 */
+export const hasNewline = (str: string) => str.indexOf('\n') !== -1;
 
 /** 生成提示文本 */
 export const generatePrompt = (key: string, ...args: any) => {
